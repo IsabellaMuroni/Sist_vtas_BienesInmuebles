@@ -1,3 +1,6 @@
+using sist_vtas_bienesInmuebles.Context;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,6 +11,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+builder.Services.AddDbContext<InmuebleContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion"));
+});
+
+using  (var scope = app.Services.CreateScope())
+{
+    var Context = scope.ServiceProvider.GetRequiredService<InmuebleContext>();
+    Context.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
