@@ -38,7 +38,7 @@ namespace sist_vtas_bienesInmuebles.Controllers
         }
 
         [HttpPost]
-        public async Task AddCliente(Cliente nuevoCliente)
+        public async Task CreateCliente(Cliente nuevoCliente)
         {
             _context.Clientes.Add(nuevoCliente);
             await _context.SaveChangesAsync();
@@ -46,7 +46,7 @@ namespace sist_vtas_bienesInmuebles.Controllers
 
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCliente(int id, Cliente cliente)
+        public async Task<IActionResult> EditCliente(int id, Cliente cliente)
         {
             if (id != cliente.Id_cliente)
             {
