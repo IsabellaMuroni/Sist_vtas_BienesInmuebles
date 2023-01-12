@@ -24,13 +24,6 @@ namespace sist_vtas_bienesInmuebles.Controllers
             return await _context.Clientes.ToListAsync();
         }
 
-        [HttpPost]
-        public async Task AddCliente(Cliente nuevoCliente)
-        {
-            _context.Clientes.Add(nuevoCliente);
-            await _context.SaveChangesAsync();
-        }
-
         [HttpGet("{id}")]
         public async Task<ActionResult<Cliente>> GetCliente(int id)
         {
@@ -44,15 +37,23 @@ namespace sist_vtas_bienesInmuebles.Controllers
             return cliente;
         }
 
-        /*[HttpPut("{id}")]
-        public async Task<IActionResult> PutCliente(int id, Cliente nuevoCliente)
+        [HttpPost]
+        public async Task AddCliente(Cliente nuevoCliente)
         {
-            if (id != nuevoCliente.Id_cliente)
+            _context.Clientes.Add(nuevoCliente);
+            await _context.SaveChangesAsync();
+        }
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCliente(int id, Cliente cliente)
+        {
+            if (id != cliente.Id_cliente)
             {
                 return BadRequest();
             }
 
-            _context.Entry(nuevoCliente).State = EntityState.Modified;
+            _context.Entry(cliente).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +61,7 @@ namespace sist_vtas_bienesInmuebles.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!nuevoClienteExists(id))
+                if (!ClienteExists(id))
                 {
                     return NotFound();
                 }
@@ -71,6 +72,27 @@ namespace sist_vtas_bienesInmuebles.Controllers
             }
 
             return NoContent();
-        }*/
+        }
+
+        private bool ClienteExists (int id)
+        {
+            return _context.Clientes.Any(e => e.Id_cliente== id);
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCliente(int id)
+        {
+            var cliente = await _context.Clientes.FindAsync(id);
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+            _context.Clientes.Remove(cliente);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
