@@ -19,6 +19,6 @@ namespace sist_vtas_bienesInmuebles.Controllers
         [HttpGet]
         public  IEnumerable<Inmueble> GetInmuebles() => _context.Inmuebles.ToList();
 
-   
+       
     }
 }
