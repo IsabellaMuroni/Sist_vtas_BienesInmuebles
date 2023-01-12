@@ -16,11 +16,11 @@ builder.Services.AddDbContext<InmuebleContext>(options =>
 
 var app = builder.Build();
 
-using  (var scope = app.Services.CreateScope())
+/*using  (var scope = app.Services.CreateScope())
 {
     var Context = scope.ServiceProvider.GetRequiredService<InmuebleContext>();
     Context.Database.Migrate();
-}
+}*/
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
