@@ -1,0 +1,59 @@
+﻿@page "/Cliente"
+@inject NavigationManager NavigationManager
+
+<h1>Cliente</h1>
+
+<button class="btn btn-primary" @onclick = "AltaCliente">Alta Cliente</button>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Dirección
+            </th>
+            <th>
+                Correo electrónico
+            </th>
+            <th>
+                Teléfono
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        
+            <tr>
+                <td>
+                  
+                </td>
+                <td>
+                   
+                </td>
+                <td>
+                    
+                </td>
+                <td>
+                    
+                </td>
+                <td>
+                    <a asp-action="Edit">Editar</a> |
+                    <a asp-action="Delete">Eliminar</a>
+                </td>
+            </tr>
+        
+    </tbody>
+</table>
+
+
+@code {
+    void AltaCliente()
+    {
+        NavigationManager.NavigateTo("/Cliente/AltaCliente");
+    }
+}
