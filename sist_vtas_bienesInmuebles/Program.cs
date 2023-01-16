@@ -3,6 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://example.com",
+                                              "http://www.contoso.com");
+                      });
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -15,6 +25,7 @@ builder.Services.AddDbContext<InmuebleContext>(options =>
 });
 
 var app = builder.Build();
+app.UseCors(MyAllowSpecificOrigins);
 
 /*using  (var scope = app.Services.CreateScope())
 {
