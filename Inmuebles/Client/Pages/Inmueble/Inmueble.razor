@@ -1,0 +1,94 @@
+﻿@page "/Inmueble"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+
+
+<div class="container text-center">
+    <div class="row">
+        <div class="row justify-content-md-center">
+            <div class="col-8"><h1>Inmueble</h1></div>
+            <div class="col-4">
+                <button class="bbtn btn-warning" @onclick="AltaInmueble"><i class="bi bi-person-plus-fill"></i>Alta Inmueble</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@if (listaInmuebles == null)
+{
+    <p>No hay inmuebles para mostrar.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ID Tipo Inmueble</th>
+                <th>Descripción Inmueble</th>
+                <th>Costo</th>
+                <th>Ubicación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var inmueble in listaInmuebles)
+            {
+                <tr>
+                    <td>@inmueble.Id_Inmueble</td>
+                    <td>@inmueble.Id_tipo_inmueble</td>
+                    <td>@inmueble.Desc_inmueble</td>
+                    <td>@inmueble.Costo_inmueble</td>
+                    <td>@inmueble.Ubic_inmueble</td>
+                    <td>
+                        <button type="button" class="btn btn-outline-success"
+                           @onclick = "() => Editar(inmueble.Id_Inmueble)"><i class="bi bi-pencil-fill"></i>
+                        </button> |
+                        <button type="button" class="btn btn-outline-danger"
+                        @onclick="() => Eliminar(inmueble.Id_Inmueble)"><i class="bi bi-trash-fill">
+                    </i>
+                        </button>
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+
+@code {
+    void AltaInmueble()
+    {
+        NavigationManager.NavigateTo("/Inmueble/AltaInmueble");
+    }
+
+    private ICollection<clientSwagger.Inmueble> listaInmuebles;
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+
+    private async Task Refresh()
+    {
+        listaInmuebles = await client.InmuebleAllAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Refresh();
+    }
+
+    void Editar(int id)
+    {
+        NavigationManager.NavigateTo($"/Inmueble/EditarInmueble/{id}");
+    }
+
+    void Eliminar(int id)
+    {
+        NavigationManager.NavigateTo($"/Inmueble/EliminarInmueble/{id}");
+    }
+}

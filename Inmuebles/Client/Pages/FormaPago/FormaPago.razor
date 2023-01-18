@@ -1,0 +1,88 @@
+﻿@page "/Forma-Pago"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+
+
+<div class="container text-center">
+    <div class="row">
+        <div class="row justify-content-md-center">
+            <div class="col-8"><h1>Forma de Pago</h1></div>
+            <div class="col-4">
+                <button class="bbtn btn-warning" @onclick="AltaFormaPago"><i class="bi bi-person-plus-fill"></i>Alta Forma de Pago</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@if (listaFormaPago == null)
+{
+    <p>No hay clientes para mostrar.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descripción forma de pago</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var formaPago in listaFormaPago)
+            {
+                <tr>
+                    <td>@formaPago.Id_forma_pago</td>
+                    <td>@formaPago.Desc_forma_pago</td>
+                    <td>
+                        <button type="button" class="btn btn-outline-success"
+                           @onclick = "() => Editar(formaPago.Id_forma_pago)"><i class="bi bi-pencil-fill"></i>
+                        </button> |
+                        <button type="button" class="btn btn-outline-danger"
+                            @onclick = "() => Eliminar(formaPago.Id_forma_pago)"><i class="b
+                    i bi-trash-fill"></i>
+                        </button>
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+
+@code {
+    void AltaFormaPago()
+    {
+        NavigationManager.NavigateTo("/Forma-Pago/AltaFormaPago");
+    }
+
+    private ICollection<clientSwagger.Forma_Pago> listaFormaPago;
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+
+    private async Task Refresh()
+    {
+        listaFormaPago = await client.FormaPagoAllAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Refresh();
+    }
+
+    void Editar(int id)
+    {
+        NavigationManager.NavigateTo($"/Forma-Pago/EditarFormaPago/{id}");
+    }
+
+    void Eliminar(int id)
+    {
+        NavigationManager.NavigateTo($"/Forma-Pago/EliminarFormaPago/{id}");
+    }
+}

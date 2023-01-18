@@ -1,0 +1,54 @@
+﻿@page "/Tipo-Inmueble/EditarTipoInmueble/{id:int}"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+
+
+<h2>Editar Cliente</h2>
+
+<EditForm Model="@tipoInmuebleEdit">
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="descripcion" class="form-label">Descripción Tipo Inmueble</label>
+            <input type="text" class="form-control" id="descripcion" @bind="tipoInmuebleEdit.Desc_inmueble">
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" @onclick="EditTipoInmueble">Guardar</button>
+            <button type="submit" class="btn btn-primary" @onclick="Cancelar">Cancelar</button>
+        </div>
+    </div>
+
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public int id { get; set; }
+
+    private clientSwagger.Tipo_Inmueble tipoInmuebleEdit = new clientSwagger.Tipo_Inmueble();
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != 0)
+        {
+            tipoInmuebleEdit = await client.TipoInmueble2Async(id);
+        }
+    }
+
+    protected async Task EditTipoInmueble()
+    {
+        await client.TipoInmueble3Async(id, tipoInmuebleEdit);
+        NavigationManager.NavigateTo("/Tipo-Inmueble");
+    }
+
+    protected void Cancelar()
+    {
+        NavigationManager.NavigateTo("/Tipo-Inmueble");
+    }
+}

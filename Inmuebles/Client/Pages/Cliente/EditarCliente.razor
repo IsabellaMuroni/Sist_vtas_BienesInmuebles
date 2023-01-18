@@ -1,31 +1,66 @@
-﻿@page "/Cliente/EditarCliente"
+﻿@page "/Cliente/EditarCliente/{id:int}"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
 
 
 <h2>Editar Cliente</h2>
 
-<form class="row g-3">
-  <div class="col-md-6">
-    <label for="nombre" class="form-label">Nombre</label>
-    <input type="text" class="form-control" id="nombre">
-  </div>
-  <div class="col-md-6">
-        <label for="inputAddress" class="form-label">Dirección</label>
-        <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-  </div>
-    <div class="col-md-6">
-        <label for="inputEmail4" class="form-label">Correo electrónico</label>
-        <input type="email" class="form-control" id="inputEmail4">
-    </div>
-    <div class="col-md-6">
-        <label for="telefono" class="form-label">Teléfono</label>
-        <input type="password" class="form-control" id="inputPassword4">
-    </div>
+<EditForm Model="@clienteEdit">
 
-  <div class="col-12">
-    <button type="submit" class="btn btn-primary">Guardar cambios</button>
-  </div>
-</form>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" @bind="clienteEdit.Nombre_cliente">
+        </div>
+        <div class="col-md-6">
+            <label for="inputAddress" class="form-label">Dirección</label>
+            <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St" @bind="clienteEdit.Dir_cliente">
+        </div>
+        <div class="col-md-6">
+            <label for="inputEmail4" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="inputEmail4" @bind="clienteEdit.Correo_cliente">
+        </div>
+        <div class="col-md-6">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <input type="number" class="form-control" id="telefono" @bind="clienteEdit.Telefono_cliente">
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" @onclick="EditCliente">Guardar</button>
+            <button type="submit" class="btn btn-primary" @onclick = "Cancelar">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+
+
+
 
 @code {
+    [Parameter]
+    public int id { get; set; }
+    private clientSwagger.Cliente clienteEdit = new clientSwagger.Cliente();
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
 
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != 0)
+        {
+            clienteEdit = await client.Cliente2Async(id);
+        }
+    }
+
+    protected async Task EditCliente()
+    {
+        await client.Cliente3Async(id, clienteEdit);
+        NavigationManager.NavigateTo("/Cliente");
+    }
+
+    protected void Cancelar()
+    {
+        NavigationManager.NavigateTo("/Cliente");
+    }
 }

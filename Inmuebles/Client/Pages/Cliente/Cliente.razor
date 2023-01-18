@@ -1,13 +1,31 @@
 ﻿@page "/Cliente"
 @inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
 
 
-<h1>Cliente</h1>
+<div class="container text-center">
+    <div class="row">
+        <div class="row justify-content-md-center">
+            <div class="col-8"><h1>Cliente</h1></div>
+          <div class="col-4">
+                <button class="bbtn btn-warning" @onclick="AltaCliente"><i class="bi bi-person-plus-fill"></i>Alta Cliente</button>
+          </div>
 
-<button class="btn btn-primary" @onclick = "AltaCliente">Alta Cliente</button>
+        </div>
+    </div>
+</div>
 
 
-<table class="table">
+@if (result == null)
+{
+    <p>No hay clientes para mostrar.</p>
+}
+else
+{
+    <table class="table">
     <thead>
         <tr>
             <th>ID</th>
@@ -19,28 +37,29 @@
         </tr>
     </thead>
     <tbody>
-        @if (result != null)
-        {
-            foreach (clientSwagger.Cliente cliente in result)
+            @foreach (var cliente in result)
             {
                 <tr>
                     <td>@cliente.Id_cliente</td>
-                    <td> @cliente.Nombre_cliente</td>
+                    <td>@cliente.Nombre_cliente</td>
                     <td>@cliente.Dir_cliente</td>
                     <td>@cliente.Correo_cliente</td>
                     <td>@cliente.Telefono_cliente</td>                 
                     <td>
-                        <button type="button" class="btn btn-primary"><a asp-action="Edit">Editar</a></button> |
-                        <button type="button" class="btn btn-danger"> <a asp-action="Delete">Eliminar</a></button>
-                   </td>
+                        <button type="button" class="btn btn-outline-success"
+                            @onclick = "() => Editar(cliente.Id_cliente)"><i class="bi bi-pencil-fill"></i>
+                        </button> |
+                        <button type="button" class="btn btn-outline-danger"
+                           @onclick = "() => Eliminar(cliente.Id_cliente)"><i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
 
-            </tr>
+                </tr>
             }
-        }
         
     </tbody>
-</table>
-
+    </table>
+}
 
 
 @code {
@@ -60,5 +79,15 @@
     protected override async Task OnInitializedAsync()
     {
         await Refresh();
+    }
+
+    void Editar(int id)
+    {
+        NavigationManager.NavigateTo($"/Cliente/EditarCliente/{id}");
+    }
+
+    void Eliminar(int id)
+    {
+        NavigationManager.NavigateTo($"/Cliente/EliminarCliente/{id}");
     }
 }

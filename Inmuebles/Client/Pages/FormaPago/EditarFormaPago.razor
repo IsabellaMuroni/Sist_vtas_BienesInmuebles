@@ -1,0 +1,56 @@
+﻿@page "/Forma-Pago/EditarFormaPago/{id:int}"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+
+
+<h2>Editar Forma de Pago</h2>
+
+<EditForm Model="@formaPagoEdit">
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="descripcion" class="form-label">Descripción Forma de Pago</label>
+            <input type="text" class="form-control" id="decripcion" @bind="formaPagoEdit.Desc_forma_pago">
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" @onclick="EditFormaPago">Guardar</button>
+            <button type="submit" class="btn btn-primary" @onclick="Cancelar">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public int id { get; set; }
+
+    private clientSwagger.Forma_Pago formaPagoEdit = new clientSwagger.Forma_Pago();
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != 0)
+        {
+            formaPagoEdit = await client.FormaPago2Async(id);
+        }
+    }
+
+    protected async Task EditFormaPago()
+    {
+        await client.FormaPago3Async(id, formaPagoEdit);
+        NavigationManager.NavigateTo("/Forma-Pago");
+    }
+
+    protected void Cancelar()
+    {
+        NavigationManager.NavigateTo("/Forma-Pago");
+    }
+}

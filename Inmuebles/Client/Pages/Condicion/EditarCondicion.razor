@@ -1,0 +1,55 @@
+﻿@page "/Condicion/EditarCondicion/{id:int}"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+
+
+<h2>Editar Cliente</h2>
+
+<EditForm Model="@condicionEdit">
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="descripcion" class="form-label">Descripción condición</label>
+            <input type="text" class="form-control" id="descripcion" @bind="condicionEdit.Desc_condicion">
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" @onclick="EditCondicion">Guardar</button>
+            <button type="submit" class="btn btn-primary" @onclick = "Cancelar">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+
+
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private clientSwagger.Condicion condicionEdit = new clientSwagger.Condicion();
+    private clientSwagger.clientSwagger condicion = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != 0)
+        {
+            condicionEdit = await condicion.Condicion2Async(id);
+        }
+    }
+
+    protected async Task EditCondicion()
+    {
+        await condicion.Condicion3Async(id, condicionEdit);
+        NavigationManager.NavigateTo("/Condicion");
+    }
+
+    protected void Cancelar()
+    {
+        NavigationManager.NavigateTo("/Condicion");
+    }
+}

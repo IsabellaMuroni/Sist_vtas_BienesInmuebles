@@ -1,0 +1,57 @@
+﻿@page "/Cliente/EliminarCliente/{id:int}"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+
+
+<h2>Eliminar Cliente</h2>
+
+<EditForm Model="@clienteDelete">
+
+    <div class="row g-3">
+        <div class="col-12">
+            <h3>¿Está seguro que desea eliminar...</h3>
+        </div>
+        <div class="col-md-6">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombre" readonly @bind="clienteDelete.Nombre_cliente">
+        </div>
+        
+        <div class="col-md-6">
+            <label for="inputEmail4" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="inputEmail4" readonly @bind="clienteDelete.Correo_cliente">
+        </div>
+
+        <div class = "d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-danger" @onclick="DeleteCliente">Eliminar</button>
+            <button type="submit" class="btn btn-primary" @onclick = "Cancelar">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private clientSwagger.Cliente clienteDelete = new clientSwagger.Cliente();
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+
+    protected override async Task OnInitializedAsync()
+    {
+       clienteDelete = await client.Cliente2Async(id);
+    }
+
+    protected async Task DeleteCliente()
+    {
+        await client.Cliente4Async(id);
+        NavigationManager.NavigateTo("/Cliente");
+    }
+
+    protected void Cancelar()
+    {
+        NavigationManager.NavigateTo("/Cliente");
+    }
+}

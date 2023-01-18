@@ -1,0 +1,80 @@
+﻿@page "/Inmueble/AltaInmueble"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+
+
+<h2>Alta Inmueble</h2>
+
+<EditForm Model="@nuevoInmueble">
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="tipo" class="form-label">Tipo Inmueble</label>
+            <select  @bind="nuevoInmueble.Id_tipo_inmueble" class="form-select" >
+                @if (listTipoInmueble != null)
+                {
+                    //<option value="0">Selecione Tipo</option>
+                    @foreach (var tipoInmueble in listTipoInmueble)
+                    {
+                           
+                        <option value="@tipoInmueble.Id_tipo_inmueble">@tipoInmueble.Desc_inmueble</option>
+                    }
+                }
+            </select>             
+        </div>
+        <div class="col-md-6">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input type="text" class="form-control" id="descripcion" @bind="nuevoInmueble.Desc_inmueble">
+        </div>
+        <div class="col-md-6">
+            <label for="ubicacion" class="form-label">Ubicación</label>
+            <input type="email" class="form-control" id="ubicacion" @bind="nuevoInmueble.Ubic_inmueble">
+        </div>
+        <div class="col-md-6">
+            <label for="costo" class="form-label">Costo</label>
+            <input type="number" class="form-control" id="costo" @bind="nuevoInmueble.Costo_inmueble">
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" @onclick="CreateInmueble">Crear Inmueble</button>
+            <button type="submit" class="btn btn-primary" @onclick="Cancelar">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+
+
+
+
+@code {
+    private int id { get; set; }
+
+    private clientSwagger.Inmueble nuevoInmueble = new clientSwagger.Inmueble();
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+
+    private ICollection<clientSwagger.Tipo_Inmueble> listTipoInmueble;
+
+       protected override async Task OnInitializedAsync()
+    {
+        if (id != 0)
+        {
+            nuevoInmueble = await client.Inmueble2Async(id);
+        }
+        listTipoInmueble = await client.TipoInmuebleAllAsync();
+        await Task.Delay(1000);
+    }
+    
+    protected async Task CreateInmueble()
+    {
+        await client.InmuebleAsync(nuevoInmueble);
+        NavigationManager.NavigateTo("/Inmueble");
+    }
+
+    protected void Cancelar()
+    {
+        NavigationManager.NavigateTo("/Inmueble");
+    }
+}

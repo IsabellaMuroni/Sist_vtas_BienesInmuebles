@@ -1,18 +1,16 @@
 using sist_vtas_bienesInmuebles.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://example.com",
-                                              "http://www.contoso.com");
-                      });
-});
+    options.AddPolicy(name: MyAllowSpecificOrigins, builder => 
+                            builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+    });
+
 // Add services to the container.
 
 builder.Services.AddControllers();
