@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Pages\Inmueble\EditarInmueble.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
     <OpenApiReference Include="..\..\..\..\swagger.json" CodeGenerator="NSwagCSharp" Namespace="clientSwagger" ClassName="clientSwagger" Link="OpenAPIs\swagger.json" />
   </ItemGroup>
 
@@ -32,18 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\Inmuebles.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\Inmueble\EditarInmueble.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\Inmueble\EditarInmueble.razor" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Pages\Inmueble\EditarInmueble.razor" />
   </ItemGroup>
 
 </Project>

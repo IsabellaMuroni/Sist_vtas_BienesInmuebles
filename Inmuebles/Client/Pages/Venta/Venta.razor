@@ -1,0 +1,105 @@
+﻿@page "/Venta"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+
+
+<div class="container text-center">
+    <div class="row">
+        <div class="row justify-content-md-center">
+            <div class="col-8"><h1>Venta</h1></div>
+            <div class="col-4">
+                <button class="bbtn btn-warning" @onclick="AltaVenta"><i class="bi bi-person-plus-fill"></i>Alta Venta</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@if (listaVenta == null)
+{
+    <p>No hay ventas para mostrar.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>ID Inmueble</th>
+                <th>ID Cliente</th>
+                <th>ID Condición</th>
+                <th>ID Forma de Pago</th>
+                <th>Descripción</th>
+                <th>Total Venta</th>
+                <th>Total IVA</th>
+                <th>Total General</th>
+                <th>Fecha Venta</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var venta in listaVenta)
+            {
+                <tr>
+                    <td>@venta.Id_venta</td>
+                    <td>@venta.Id_inmueble</td>
+                    <td>@venta.Id_cliente</td>
+                    <td>@venta.Id_condicion</td>
+                    <td>@venta.Id_forma_pago</td>
+                    <td>@venta.Desc_venta</td>
+                    <td>@venta.Total_venta</td>
+                    <td>@venta.Total_iva</td>
+                    <td>@venta.Total_general</td>
+                    <td>@venta.Fecha_venta</td>
+                    <td>
+                        <button type="button" class="btn btn-outline-success"
+                        @onclick="() => Editar(venta.Id_venta)">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button> |
+                        <button type="button" class="btn btn-outline-danger"
+                        @onclick="() => Eliminar(venta.Id_venta)">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+}
+
+
+@code {
+    void AltaVenta()
+    {
+        NavigationManager.NavigateTo("/Venta/AltaVenta");
+    }
+
+    private ICollection<clientSwagger.Venta> listaVenta;
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+
+    private async Task Refresh()
+    {
+        listaVenta = await client.VentaAllAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Refresh();
+    }
+
+    void Editar(int id)
+    {
+        NavigationManager.NavigateTo($"/Venta/EditarVenta/{id}");
+    }
+
+    void Eliminar(int id)
+    {
+        NavigationManager.NavigateTo($"/Venta/EliminarVenta/{id}");
+    }
+}

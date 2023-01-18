@@ -1,0 +1,140 @@
+﻿@page "/Venta/EditarVenta/{id:int}"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+
+
+<h2>Editar Venta</h2>
+
+<EditForm Model="@ventaEdit">
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label for="tipo" class="form-label">Inmueble</label>
+            <select @bind="ventaEdit.Id_inmueble" class="form-select">
+                @if (listInmuebles != null)
+                {
+                    //<option value="0">Selecione Tipo</option>
+                    @foreach (var inmueble in listInmuebles)
+                    {
+
+                        <option value="@inmueble.Id_Inmueble">@inmueble.Costo_inmueble</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="tipo" class="form-label">Cliente</label>
+            <select @bind="ventaEdit.Id_cliente" class="form-select">
+                @if (listClientes != null)
+                {
+                    //<option value="0">Selecione Tipo</option>
+                    @foreach (var cliente in listClientes)
+                    {
+                        <option value="@cliente.Id_cliente">@cliente.Nombre_cliente</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="tipo" class="form-label">Condición</label>
+            <select @bind="ventaEdit.Id_condicion" class="form-select">
+                @if (listCondiciones != null)
+                {
+                    //<option value="0">Selecione Tipo</option>
+                    @foreach (var condicion in listCondiciones)
+                    {
+                        <option value="@condicion.Id_condicion">@condicion.Desc_condicion</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="tipo" class="form-label">Forma de Pago</label>
+            <select @bind="ventaEdit.Id_forma_pago" class="form-select">
+                @if (listFormaPagos != null)
+                {
+                    //<option value="0">Selecione Tipo</option>
+                    @foreach (var formaPago in listFormaPagos)
+                    {
+                        <option value="@formaPago.Id_forma_pago">@formaPago.Desc_forma_pago</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input type="text" class="form-control" id="descripcion" @bind="ventaEdit.Desc_venta">
+        </div>
+        <div class="col-md-6">
+            <label for="tventa" class="form-label">Total Venta</label>
+            <input type="number" class="form-control" id="tventa" @bind="ventaEdit.Total_venta">
+        </div>
+        <div class="col-md-6">
+            <label for="iva" class="form-label">Total IVA</label>
+            <input type="number" class="form-control" id="iva" @bind="ventaEdit.Total_iva">
+        </div>
+
+        <div class="col-md-6">
+            <label for="tgeneral" class="form-label">Total General</label>
+            <input type="number" class="form-control" id="tgeneral" @bind="ventaEdit.Total_general">
+        </div>
+
+        <div class="col-md-6">
+            <label for="fecha" class="form-label">Fecha Venta</label>
+            <input type="date" class="form-control" id="fecha" @bind="ventaEdit.Fecha_venta">
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-success" @onclick="EditVenta">Guardar</button>
+            <button type="submit" class="btn btn-primary" @onclick="Cancelar">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public int id { get; set; }
+
+    private clientSwagger.Venta ventaEdit = new clientSwagger.Venta();
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+
+    private ICollection<clientSwagger.Inmueble> listInmuebles;
+    private ICollection<clientSwagger.Cliente> listClientes;
+    private ICollection<clientSwagger.Condicion> listCondiciones;
+    private ICollection<clientSwagger.Forma_Pago> listFormaPagos;
+
+    private DateTime fecha = DateTime.Now;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != 0)
+        {
+            ventaEdit = await client.Venta2Async(id);
+        }
+        listInmuebles = await client.InmuebleAllAsync();
+        listClientes = await client.ClienteAllAsync();
+        listCondiciones = await client.CondicionAllAsync();
+        listFormaPagos = await client.FormaPagoAllAsync();
+        await Task.Delay(1000);
+    }
+
+    protected async Task EditVenta()
+    {
+        await client.Venta3Async(id,ventaEdit);
+        NavigationManager.NavigateTo("/Venta");
+    }
+
+    protected void Cancelar()
+    {
+        NavigationManager.NavigateTo("/Venta");
+    }
+}
+

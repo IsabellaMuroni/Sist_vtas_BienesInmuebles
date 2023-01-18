@@ -1,0 +1,73 @@
+﻿@page "/Venta/EliminarVenta/{id:int}"
+@inject NavigationManager NavigationManager
+@using System.Net.Http
+@inject HttpClient Http
+@using System.Net.Http.Json
+@using System.Threading.Tasks
+
+
+<h2>Eliminar Venta</h2>
+
+<EditForm Model="@ventaDelete">
+
+    <div class="row g-3">
+        <div class="col-12">
+            <h3>¿Está seguro que desea eliminar...</h3>
+        </div>
+        <div class="col-md-6">
+            <label for="id" class="form-label">ID</label>
+            <input type="text" class="form-control" id="id" readonly @bind="ventaDelete.Id_venta">
+        </div>
+
+        <div class="col-md-6">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input type="text" class="form-control" id="descripcion" readonly @bind="ventaDelete.Total_venta">
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="submit" class="btn btn-danger" @onclick="DeleteVenta">Eliminar</button>
+            <button type="submit" class="btn btn-primary" @onclick="Cancelar">Cancelar</button>
+        </div>
+    </div>
+</EditForm>
+
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private clientSwagger.Venta ventaDelete = new clientSwagger.Venta();
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+
+    private ICollection<clientSwagger.Inmueble> listInmuebles;
+    private ICollection<clientSwagger.Cliente> listClientes;
+    private ICollection<clientSwagger.Condicion> listCondiciones;
+    private ICollection<clientSwagger.Forma_Pago> listFormaPagos;
+
+    private DateTime fecha = DateTime.Now;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != 0)
+        {
+            ventaDelete = await client.Venta2Async(id);
+        }
+        listInmuebles = await client.InmuebleAllAsync();
+        listClientes = await client.ClienteAllAsync();
+        listCondiciones = await client.CondicionAllAsync();
+        listFormaPagos = await client.FormaPagoAllAsync();
+        await Task.Delay(1000);
+    }
+
+    protected async Task DeleteVenta()
+    {
+        await client.Venta4Async(id);
+        NavigationManager.NavigateTo("/Venta");
+    }
+
+    protected void Cancelar()
+    {
+        NavigationManager.NavigateTo("/Venta");
+    }
+}

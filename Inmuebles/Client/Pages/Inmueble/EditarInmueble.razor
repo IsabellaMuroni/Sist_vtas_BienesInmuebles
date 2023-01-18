@@ -8,38 +8,39 @@
 
 <h2>Editar Inmueble</h2>
 
-<EditForm Model="@inmuebleEdit">
+
+<EditForm Model="@nuevoInmueble">
 
     <div class="row g-3">
         <div class="col-md-6">
             <label for="tipo" class="form-label">Tipo Inmueble</label>
-            <select  @bind="inmuebleEdit.Id_tipo_inmueble" class="form-select" >
+            <select @bind="nuevoInmueble.Id_tipo_inmueble" class="form-select">
                 @if (listTipoInmueble != null)
                 {
                     //<option value="0">Selecione Tipo</option>
                     @foreach (var tipoInmueble in listTipoInmueble)
                     {
-                           
+
                         <option value="@tipoInmueble.Id_tipo_inmueble">@tipoInmueble.Desc_inmueble</option>
                     }
                 }
-            </select>             
+            </select>
         </div>
         <div class="col-md-6">
             <label for="descripcion" class="form-label">Descripción</label>
-            <input type="text" class="form-control" id="descripcion" @bind="inmuebleEdit.Desc_inmueble">
+            <input type="text" class="form-control" id="descripcion" @bind="nuevoInmueble.Desc_inmueble">
         </div>
         <div class="col-md-6">
             <label for="ubicacion" class="form-label">Ubicación</label>
-            <input type="email" class="form-control" id="ubicacion" @bind="inmuebleEdit.Ubic_inmueble">
+            <input type="email" class="form-control" id="ubicacion" @bind="nuevoInmueble.Ubic_inmueble">
         </div>
         <div class="col-md-6">
             <label for="costo" class="form-label">Costo</label>
-            <input type="number" class="form-control" id="costo" @bind="inmuebleEdit.Costo_inmueble">
+            <input type="number" class="form-control" id="costo" @bind="nuevoInmueble.Costo_inmueble">
         </div>
 
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <button type="submit" class="btn btn-success" @onclick="EditarInmueble">Guardar</button>
+            <button type="submit" class="btn btn-success" @onclick="EditInmueble">Guardar</button>
             <button type="submit" class="btn btn-primary" @onclick="Cancelar">Cancelar</button>
         </div>
     </div>
@@ -50,26 +51,28 @@
 
 
 @code {
-    private int id { get; set; }
 
-    private clientSwagger.Inmueble inmuebleEdit = new clientSwagger.Inmueble();
-    private clientSwagger.clientSwagger inmuebleClient = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
+    [Parameter]
+    public int id { get; set; }
 
-    private ICollection<clientSwagger.Tipo_Inmueble> listTipoInmueble { get; set; }
+    private clientSwagger.Inmueble nuevoInmueble = new clientSwagger.Inmueble();
+    private clientSwagger.clientSwagger client = new clientSwagger.clientSwagger("https://localhost:7260/", new HttpClient());
 
-       protected override async Task OnInitializedAsync()
+    private ICollection<clientSwagger.Tipo_Inmueble> listTipoInmueble;
+
+    protected override async Task OnInitializedAsync()
     {
         if (id != 0)
         {
-            inmuebleEdit = await inmuebleClient.Inmueble2Async(id);
+            nuevoInmueble = await client.Inmueble2Async(id);
         }
-        listTipoInmueble = await inmuebleClient.TipoInmuebleAllAsync();
+        listTipoInmueble = await client.TipoInmuebleAllAsync();
         await Task.Delay(1000);
     }
-    
+
     protected async Task EditInmueble()
     {
-        await inmuebleClient.Inmueble3Async(id, inmuebleEdit);
+        await client.Inmueble3Async(id, nuevoInmueble);
         NavigationManager.NavigateTo("/Inmueble");
     }
 

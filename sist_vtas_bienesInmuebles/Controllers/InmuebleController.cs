@@ -83,13 +83,13 @@ namespace sist_vtas_bienesInmuebles.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInmueble(int id)
         {
-            var inmueble = await _context.Clientes.FindAsync(id);
+            var inmueble = await _context.Inmuebles.FindAsync(id);
             if (inmueble == null)
             {
                 return NotFound();
             }
 
-            _context.Clientes.Remove(inmueble);
+            _context.Inmuebles.Remove(inmueble);
             await _context.SaveChangesAsync();
 
             return NoContent();
